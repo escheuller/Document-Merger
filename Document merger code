@@ -1,0 +1,110 @@
+//code for the requirements are commented out, the uncommented code contains all the optional requirements provided//
+
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DocumentMerger
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Document Merger");
+            Console.WriteLine("");
+            string name1 = "";
+            string name2 = "";
+            bool decision = true;
+            List<string> names=new List<string>();
+            names.Add(name1);
+            //this while loop will terminate if the user decides to end the program
+            while (decision)
+            {               
+                try
+                {
+                    //This is where we will check if file 1 exists in the current directory
+                    do
+                    {
+                        Console.Write("Name of document?: ");
+                        name1 = Console.ReadLine();
+                        if (name1 == "")
+                            break;
+                        name1 = name1.Replace(".txt", "") + ".txt";
+                        System.IO.FileInfo fi;
+                        fi = new System.IO.FileInfo(Environment.CurrentDirectory + "\\" + name1);
+                        if (fi.Exists)
+                        {
+                            names.Add(name1);
+                        }
+                        else
+                        {
+                            Console.WriteLine("File not found.  Try again.");
+                        }
+                        fi = null;
+                    } while (true);
+
+                    //this is where we will check if the second file exists
+                    //do
+                    //{
+                    //    Console.Write("Name of the 2nd document?: ");
+                    //    name2 = Console.ReadLine().Replace(".txt", "") + ".txt";
+                    //    System.IO.FileInfo fi2;
+                    //    fi2 = new System.IO.FileInfo(Environment.CurrentDirectory + "\\" + name2);
+                    //    if (fi2.Exists)
+                    //    {
+                    //        break;
+                    //    }
+                    //    else
+                    //    {
+                    //        Console.WriteLine("File not found.  Try again.");
+                    //    }
+                    //    fi2 = null;
+                    //} while (true);
+                    string newFile = "";
+                    for (int j = 1; j < names.Count; j++)
+                        newFile = newFile + names[j];
+                    newFile = newFile.Replace(".txt" , "") + ".txt";
+                    string userFile = "";
+                    Console.Write("Enter the name of the new file[default=" + newFile + "]: ");
+                    userFile = Console.ReadLine();
+                    if (userFile.Length == 0)
+                      userFile = newFile;
+                    userFile = userFile.Replace(".txt", "") + ".txt";
+                    //Pass the file path and file name to the StreamReader constructor
+                    StreamReader sr;
+                    StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + "\\" + userFile);
+                    int i;
+                    for (i=1;i<names.Count;i++)
+                    {
+                        sr = new StreamReader(Environment.CurrentDirectory + "\\" + names[i]);
+                        sw.Write(sr.ReadToEnd());   //this copies all content of all the files into the new file
+                        sr.Close();
+                    }
+                    //sw.Write(sr.ReadToEnd());   //this copies all content of file 1 into the new file
+                    //sr.Close();
+                    //sr = new StreamReader(name2);   
+                    //sw.Write(sr.ReadToEnd());   //this copies all content of file 2 into the new file
+                    //sr.Close();
+                    sw.Flush();
+                    sw.Close();
+                    System.IO.FileInfo count = new System.IO.FileInfo(userFile); //this allows us to easily find the number of characters in the new file
+                    Console.Write(userFile + " was successfully saved. The document contains ");
+                    Console.WriteLine(count.Length + " characters.");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception: " + e.ToString());
+                }
+                   
+                string answer = "";
+                Console.Write("Would you like to merge 2 more files?: "); //prompt user to see if they want to merge more files
+                answer = Console.ReadLine();
+                if (answer.ToLower()!= "yes" && answer.ToLower()!="y") 
+                    decision = false;   //if not, exit the program
+            }
+        }
+    }
+}
